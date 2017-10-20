@@ -1,0 +1,88 @@
+buildscript {
+    ext {
+        kotlinVersion = '1.1.4'
+        springBootVersion = '1.5.8.RELEASE'
+        restAssuredVersion = '2.9.0'
+        wiremockVersion = '2.8.0'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-spring'
+apply plugin: 'jacoco'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'idea'
+
+version = '1.0'
+sourceCompatibility = 1.8
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.5
+            }
+        }
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: ["**/models/**"])
+        })
+    }   
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: ["**/models/**"])
+        })
+    } 
+}
+
+check {
+    dependsOn jacocoTestCoverageVerification
+}
+
+jar {
+    baseName = 'kotlin-search'
+    version = '1.0'
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
+    compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.8.7")
+    compile("org.apache.httpcomponents:httpclient:4.5.2")    
+    
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("com.jayway.restassured:rest-assured:${restAssuredVersion}")
+    testCompile("com.jayway.restassured:json-path:${restAssuredVersion}")
+    testCompile("com.github.tomakehurst:wiremock-standalone:${wiremockVersion}")
+}
