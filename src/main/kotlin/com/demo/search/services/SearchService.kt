@@ -13,4 +13,8 @@ class SearchService @Autowired constructor(private val restTemplate: RestTemplat
     }
 
     fun search(term: String) = SearchResponse(listOf())
+
+    fun upsertOne() {}
+    fun upsertMany() {}
+    fun deleteOne(id: String) {}
 }

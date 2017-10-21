@@ -19,4 +19,14 @@ class SearchController
 
     @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/search/{term}")
     fun search(@PathVariable term: String) = searchService.search(term)
+
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/upsert")
+    fun upsert() = searchService.upsertOne()
+
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/upsert/bulk")
+    fun bulk() = searchService.upsertMany()
+    
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/delete/{id}")
+    fun del(@PathVariable id: String) = searchService.deleteOne(id)
 }
+
