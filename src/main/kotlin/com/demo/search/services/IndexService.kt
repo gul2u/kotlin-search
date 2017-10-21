@@ -17,7 +17,7 @@ import org.springframework.web.client.HttpStatusCodeException
 
 @Service
 class IndexService 
-@Autowired constructor(private val restTemplate: RestTemplate) {
+@Autowired constructor(private val restTemplate: RestTemplate, private val indexAliasService: IndexAliasService) {
     companion object {
         private val logger = LoggerFactory.getLogger(IndexService::class.java)
     }
@@ -49,8 +49,8 @@ class IndexService
             val req = HttpEntity<String>(indexJson(), headers)
             restTemplate.exchange(indexUrl(), HttpMethod.PUT, req, String::class.java) 
 
-            establishWriteAlias()
-            establishReadAlias()
+            indexAliasService.establishWriteAlias()
+            indexAliasService.establishReadAlias()
         }
     }
     
@@ -69,12 +69,6 @@ class IndexService
     private fun indexJson() = 
         resourceLoader.getResource("classpath:schema.json").inputStream.bufferedReader().use { it.readText() }
     
-    private fun establishWriteAlias() {
-
-    }
-    private fun establishReadAlias() {
-
-    }
     private fun indexExists() : Boolean {
         try {
             restTemplate.headForHeaders(URI(indexUrl()))

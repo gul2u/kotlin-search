@@ -1,6 +1,7 @@
 package com.demo.search.controllers
 
 import com.demo.search.service.IndexService
+import com.demo.search.service.IndexAliasService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @CrossOrigin
 @RestController
 class IndexController 
-@Autowired constructor(private val indexService: IndexService) {
+@Autowired constructor(private val indexService: IndexService, private val indexAliasService: IndexAliasService) {
     companion object {
         private val logger = LoggerFactory.getLogger(IndexController::class.java)
     }
@@ -26,5 +27,5 @@ class IndexController
     fun drop() = indexService.drop()
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/alias/swap")
-    fun swapAlias() {}
+    fun swapAlias() = indexAliasService.swapAlias() 
 }
