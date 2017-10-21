@@ -6,4 +6,7 @@ A basic kotlin + elasticsearch example
 
 ```
 ./gradlew build
+
+java -jar build/libs/kotlin-search-1.0.jar
+
 ```

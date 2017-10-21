@@ -42,15 +42,22 @@ class IndexService
     fun index() = restTemplate.getForObject(indexUrl(), String::class.java)
     
     fun create() {
-        if (!indexExists()) {
-            // create it
-            val headers = HttpHeaders()
-            headers.contentType = MediaType.APPLICATION_JSON
-            val req = HttpEntity<String>(indexJson(), headers)
-            restTemplate.exchange(indexUrl(), HttpMethod.PUT, req, String::class.java) 
+        try {
+            if (!indexExists()) {
+                // create it
+                val headers = HttpHeaders()
+                headers.contentType = MediaType.APPLICATION_JSON
+                val req = HttpEntity<String>(indexJson(), headers)
+           
+                logger.info("indexJson {}", indexJson())
+                restTemplate.exchange(indexUrl(), HttpMethod.PUT, req, String::class.java) 
 
-            indexAliasService.establishWriteAlias()
-            indexAliasService.establishReadAlias()
+                indexAliasService.establishWriteAlias()
+                indexAliasService.establishReadAlias()
+            }
+        } catch (ex: HttpStatusCodeException) {
+            logger.error("failed to create index, {}", ex.getResponseBodyAsString())
+            throw ex
         }
     }
     
