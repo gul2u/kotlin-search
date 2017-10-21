@@ -1,2 +1,6 @@
-search:
+elasticsearch:
     url: http://localhost:9200
+    index: search-v1
+    type: content
+    readAlias: movie-read
+    writeAlias: movie-write

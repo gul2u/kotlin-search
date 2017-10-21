@@ -15,6 +15,23 @@
                     "type": "custom",
                     "tokenizer": "standard",
                     "filter": [
+                        "lowercase", "asciifolding"
+                    ]
+                },
+                "text_stemmed_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase", "asciifolding", "english_filter"
+                    ]
+                },
+                "collapse_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "whitespace",
+                    "char_filter": [
+                        "remove_symbols"
+                    ],
+                    "filter": [
                         "lowercase", "asciifolding", "english_filter"
                     ]
                 },
@@ -29,10 +46,24 @@
                     ]
                 }
             },
+            "char_filter": {
+                "remove_symbols": {
+                    "type": "pattern_replace",
+                    "pattern": "\\W",
+                    "replacement": ""
+                }
+            },
             "filter": {
                 "english_filter": {
                     "type": "stemmer",
                     "name": "minimal_english"
+                },
+                "word_delimiter": {
+                    "type": "word_delimiter",
+                    "catenate_all": true,
+                    "preserve_original": true,
+                    "split_on_case_change": false,
+                    "stem_english_possessive": false
                 },
                 "autocomplete_filter": {
                     "type": "edge_ngram",
@@ -51,11 +82,20 @@
                 },
                 "title": {
                     "type": "string",
+                    "norms": false,
                     "analyzer": "text_analyzer",
                     "fields": {
                         "exact": {
                             "type": "string",
                             "analyzer": "exact_analyzer"
+                        },
+                        "stemmed": {
+                            "type": "string",
+                            "analyzer": "text_stemmed_analyzer"
+                        },
+                        "collapse": {
+                            "type": "string",
+                            "analyzer": "collapse_analyzer"
                         },
                         "prefix": {
                             "type": "string",
@@ -63,6 +103,14 @@
                             "search_analyzer": "text_analyzer"
                         }
                     }
+                },
+                "updated": {
+                    "type": "date",
+                    "format": "epoch_millis"
+                },
+                "created": {
+                    "type": date",
+                    "format": "epoch_millis"
                 }
             }
         }
