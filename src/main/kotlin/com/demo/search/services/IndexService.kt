@@ -49,7 +49,6 @@ class IndexService
                 headers.contentType = MediaType.APPLICATION_JSON
                 val req = HttpEntity<String>(indexJson(), headers)
            
-                logger.info("indexJson {}", indexJson())
                 restTemplate.exchange(indexUrl(), HttpMethod.PUT, req, String::class.java) 
 
                 indexAliasService.establishWriteAlias()

@@ -77,28 +77,28 @@
         "content": {
             "properties": {
                 "id": {
-                    "type": "string",
+                    "type": "text",
                     "index": "not_analyzed"
                 },
                 "title": {
-                    "type": "string",
+                    "type": "text",
                     "norms": false,
                     "analyzer": "text_analyzer",
                     "fields": {
                         "exact": {
-                            "type": "string",
+                            "type": "text",
                             "analyzer": "exact_analyzer"
                         },
                         "stemmed": {
-                            "type": "string",
+                            "type": "text",
                             "analyzer": "text_stemmed_analyzer"
                         },
                         "collapse": {
-                            "type": "string",
+                            "type": "text",
                             "analyzer": "collapse_analyzer"
                         },
                         "prefix": {
-                            "type": "string",
+                            "type": "text",
                             "analyzer": "autocomplete_analyzer",
                             "search_analyzer": "text_analyzer"
                         }
@@ -109,7 +109,7 @@
                     "format": "epoch_millis"
                 },
                 "created": {
-                    "type": date",
+                    "type": "date",
                     "format": "epoch_millis"
                 }
             }
