@@ -24,4 +24,7 @@ class IndexController
 
     @RequestMapping(method = arrayOf(RequestMethod.DELETE), value = "/index")
     fun drop() = indexService.drop()
+
+    @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/alias/swap")
+    fun swapAlias() {}
 }
