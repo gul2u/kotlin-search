@@ -48,7 +48,16 @@ class IndexAliasService
     private fun createReadAlias() {}
     private fun createWriteAlias() {}
     private fun deleteReadAlias() {}
-    private fun aliasExists() : Boolean {
-        return false
+    private fun aliasExists(aliasName: String): Boolean {
+        try {
+            restTemplate.headForHeaders("${esUrl}/_alias/${aliasName}")
+            return true
+        } catch (ex: HttpStatusCodeException) {
+            if (ex.statusCode == HttpStatus.NOT_FOUND) {
+                return false
+            } else {
+                throw ex
+            }
+        }
     }
 }

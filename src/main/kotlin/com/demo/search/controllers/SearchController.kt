@@ -1,8 +1,10 @@
 package com.demo.search.controllers
 
+import com.demo.search.models.Movie
 import com.demo.search.service.SearchService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,7 +23,7 @@ class SearchController
     fun search(@PathVariable term: String) = searchService.search(term)
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/upsert")
-    fun upsert() = searchService.upsertOne()
+    fun upsert(@RequestBody movie: Movie) = searchService.upsertOne(movie)
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/upsert/bulk")
     fun bulk() = searchService.upsertMany()
