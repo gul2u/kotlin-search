@@ -19,7 +19,7 @@ class IndexController
     }
 
     @RequestMapping(method = arrayOf(RequestMethod.GET), value = "/index", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun index() = indexService.index() //response(indexService.index())
+    fun index() = indexService.index()
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/index", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun create() : String {

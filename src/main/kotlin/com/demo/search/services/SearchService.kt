@@ -1,4 +1,4 @@
-package com.demo.search.service
+package com.demo.search.services
 
 import com.demo.search.models.SearchResponse
 import com.demo.search.models.UpsertRequest
@@ -11,7 +11,11 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.HttpStatusCodeException
 
 @Service
-class SearchService @Autowired constructor(private val restTemplate: RestTemplate) {
+class SearchService 
+@Autowired constructor(
+    private val restTemplate: RestTemplate, 
+    private val queryBuilder: QueryBuilder) {
+    
     companion object {
         private val logger = LoggerFactory.getLogger(SearchService::class.java)
     }
@@ -25,7 +29,14 @@ class SearchService @Autowired constructor(private val restTemplate: RestTemplat
     @Value("\${elasticsearch.writeAlias}")
     private lateinit var writeAlias: String
 
-    fun search(term: String) = SearchResponse(listOf())
+    fun search(term: String): SearchResponse {
+        try {
+            queryBuilder.build(term)
+        } catch (ex: HttpStatusCodeException) {
+            logger.error("query failed for {}", term, ex)
+        }
+        return SearchResponse(listOf())
+    }
 
     fun upsertOne(movie: Movie) {
         try {

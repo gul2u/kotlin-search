@@ -35,6 +35,9 @@ compileTestKotlin {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url "http://dl.bintray.com/mbuhot/maven"
+    }
 }
 
 test {
@@ -80,7 +83,8 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.8.7")
     compile("org.apache.httpcomponents:httpclient:4.5.2")    
-    
+    compile("mbuhot:eskotlin:0.3.0")
+
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("com.jayway.restassured:rest-assured:${restAssuredVersion}")
     testCompile("com.jayway.restassured:json-path:${restAssuredVersion}")

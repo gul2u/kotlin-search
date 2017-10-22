@@ -1,7 +1,7 @@
 package com.demo.search.controllers
 
 import com.demo.search.models.Movie
-import com.demo.search.service.SearchService
+import com.demo.search.services.SearchService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestBody
