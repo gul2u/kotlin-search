@@ -2,6 +2,7 @@ package com.demo.search.service
 
 import java.net.URI
 import com.demo.search.models.SearchResponse
+import com.demo.search.exceptions.IndexNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ResourceLoader
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,8 +40,15 @@ class IndexService
 
     private fun indexUrl() = "${esUrl}/${indexName}"
 
-    fun index() = restTemplate.getForObject(indexUrl(), String::class.java)
-    
+    fun index() = try {
+        restTemplate.getForObject(indexUrl(), String::class.java)
+    } catch (ex: HttpStatusCodeException) {
+        if (ex.statusCode == HttpStatus.NOT_FOUND) {
+            throw IndexNotFoundException()
+        } else {
+            throw ex
+        }
+    }
     fun create() {
         try {
             if (!indexExists()) {

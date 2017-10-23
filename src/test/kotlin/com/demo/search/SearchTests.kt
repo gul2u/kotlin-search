@@ -5,11 +5,8 @@ import com.jayway.restassured.filter.log.RequestLoggingFilter
 import com.jayway.restassured.filter.log.ResponseLoggingFilter
 import com.jayway.restassured.http.ContentType
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.startsWith
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
@@ -58,5 +55,27 @@ class SearchTests {
             .get("/index")
             .then()
             .statusCode(HttpStatus.OK.value())
+    }
+
+    @Test
+    fun `should insert document`() {
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .content("""{"id": "12345", "title": "Gravity"}""")
+            .post("/upsert")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+    }
+
+    @Test
+    fun `should find movies by title`() {
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .get("/search/gravity")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("results[0].title", equalTo("Gravity"))
     }
 }
