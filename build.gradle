@@ -88,5 +88,4 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("com.jayway.restassured:rest-assured:${restAssuredVersion}")
     testCompile("com.jayway.restassured:json-path:${restAssuredVersion}")
-    testCompile("com.github.tomakehurst:wiremock-standalone:${wiremockVersion}")
 }
