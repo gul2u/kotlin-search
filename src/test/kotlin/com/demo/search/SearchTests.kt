@@ -78,4 +78,14 @@ class SearchTests {
             .statusCode(HttpStatus.OK.value())
             .body("results[0].title", equalTo("Gravity"))
     }
+
+    @Test
+    fun `should delete document`() {
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .post("/delete/12345")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+    }
 }
