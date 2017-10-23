@@ -66,7 +66,7 @@ class SearchService
     
     fun deleteOne(id: String) {
         try {
-            restTemplate.delete("${esUrl}/${writeAlias}/${id}")
+            restTemplate.delete("${esUrl}/${writeAlias}/${indexType}/${id}")
         } catch (ex: HttpStatusCodeException) {
             logger.error("delete failed for id={}, {}", id, ex)
             throw ex
