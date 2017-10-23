@@ -5,6 +5,7 @@ import com.jayway.restassured.filter.log.RequestLoggingFilter
 import com.jayway.restassured.filter.log.ResponseLoggingFilter
 import com.jayway.restassured.http.ContentType
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.collection.IsCollectionWithSize.hasSize
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -32,25 +33,26 @@ class SearchTests {
             .delete("/index")
             .then()
             .statusCode(HttpStatus.OK.value())
+
+        RestAssured.given()
+                .post("/index")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
     }
 
     @After
     fun after() {
+        /* delete the index */
+        RestAssured.given()
+                .delete("/index")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+
         RestAssured.replaceFiltersWith(Collections.emptyList())
     }
 
     @Test
-    fun `should create index`() {
-        RestAssured.given()
-            .get("/index")
-            .then()
-            .statusCode(HttpStatus.NOT_FOUND.value())
-
-        RestAssured.given()
-            .post("/index")
-            .then()
-            .statusCode(HttpStatus.CREATED.value())
-
+    fun `should get the index`() {
         RestAssured.given()
             .get("/index")
             .then()
@@ -71,6 +73,14 @@ class SearchTests {
     @Test
     fun `should find movies by title`() {
         RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .content("""{"id": "12345", "title": "Gravity"}""")
+                .post("/upsert")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+
+        RestAssured.given()
             .contentType(ContentType.JSON)
             .accept(ContentType.JSON)
             .get("/search/gravity")
@@ -82,10 +92,26 @@ class SearchTests {
     @Test
     fun `should delete document`() {
         RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .content("""{"id": "12345", "title": "Gravity"}""")
+                .post("/upsert")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+
+        RestAssured.given()
             .contentType(ContentType.JSON)
             .accept(ContentType.JSON)
             .post("/delete/12345")
             .then()
             .statusCode(HttpStatus.OK.value())
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/search/gravity")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("results", hasSize<Int>(0))
     }
 }
