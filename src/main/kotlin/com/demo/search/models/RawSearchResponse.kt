@@ -6,7 +6,8 @@ data class SearchHit
     (val _id: String, 
      val _index: String, 
      val _type: String, 
-     val _score: Float, 
+     val _score: Float,
+     val matched_queries: List<String>,
      val _source: SearchSource)
 
 data class SearchSource

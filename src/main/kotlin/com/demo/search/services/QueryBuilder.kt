@@ -9,7 +9,8 @@ class QueryBuilder {
             "match": {
                 "title.exact": {
                     "query": "${term}",
-                    "boost": 2.0
+                    "boost": 2.0,
+                    "_name": "title exact match"
                 }
             }
         }
@@ -21,7 +22,8 @@ class QueryBuilder {
                 "title": {
                     "query": "${term}",
                     "operator": "and",
-                    "boost": 1.25
+                    "boost": 1.25,
+                    "_name": "title term match"
                 }
             }
         }
@@ -33,7 +35,8 @@ class QueryBuilder {
                 "title.stemmed": {
                     "query": "${term}",
                     "operator": "and",
-                    "boost": 1.2
+                    "boost": 1.2,
+                    "_name": "title stemmed term match"
                 }
             }
         }
@@ -44,7 +47,8 @@ class QueryBuilder {
             "match": {
                 "title.collapse": {
                     "query": "${term}",
-                    "boost": 1.2
+                    "boost": 1.2,
+                    "_name": "title collapsed term match"
                 }
             }
         }
@@ -56,7 +60,8 @@ class QueryBuilder {
                 "title.prefix": {
                     "query": "${term}",
                     "operator": "and",
-                    "boost": 1.05
+                    "boost": 1.05,
+                    "_name": "title term prefix match"
                 }
             }
         }

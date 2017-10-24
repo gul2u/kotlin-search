@@ -47,7 +47,7 @@ class SearchService
         try {
             val res = restTemplate.postForObject(URI("${esUrl}/${readAlias}/${indexType}/_search"), 
                 queryBuilder.build(term), RawSearchResponse::class.java)
-            return SearchResponse(res.hits.hits.map { SearchResult(it._id, it._score, it._source.title) }) 
+            return SearchResponse(res.hits.hits.map { SearchResult(it._id, it._score, it.matched_queries, it._source.title) }) 
         } catch (ex: HttpStatusCodeException) {
             logger.error("query failed for {}, body: {}", term, ex.getResponseBodyAsString())
             throw ex
