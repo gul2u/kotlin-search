@@ -1,0 +1,7 @@
+elasticsearch:
+    url: http://localhost:9200
+    index: test-search-v1
+    type: test-content
+    refresh: true
+    readAlias: test-movie-read
+    writeAlias: test-movie-write

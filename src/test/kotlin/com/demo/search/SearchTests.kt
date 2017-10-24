@@ -86,6 +86,7 @@ class SearchTests {
             .get("/search/gravity")
             .then()
             .statusCode(HttpStatus.OK.value())
+            .body("results", hasSize<Int>(1))
             .body("results[0].title", equalTo("Gravity"))
     }
 

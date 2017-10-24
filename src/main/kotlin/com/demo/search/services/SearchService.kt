@@ -35,6 +35,9 @@ class SearchService
     @Value("\${elasticsearch.type}")
     private lateinit var indexType: String
 
+    @Value("\${elasticsearch.refresh}")
+    private var refresh: Boolean = false
+
     fun search(term: String): SearchResponse {
         try {
             val query = """
@@ -56,7 +59,7 @@ class SearchService
 
     fun upsertOne(movie: Movie) {
         try {
-            restTemplate.postForObject("${esUrl}/${writeAlias}/${movie.id}/_update?refresh=true", UpsertRequest(movie), String::class.java)
+            restTemplate.postForObject("${esUrl}/${writeAlias}/${indexType}/${movie.id}/_update?refresh=${refresh}", UpsertRequest(movie), String::class.java)
         } catch (ex: HttpStatusCodeException) {
             logger.error("upsert failed for id={}, body={}", movie.id, ex.getResponseBodyAsString())
             throw ex
@@ -67,7 +70,7 @@ class SearchService
     
     fun deleteOne(id: String) {
         try {
-            restTemplate.delete("${esUrl}/${writeAlias}/${indexType}/${id}")
+            restTemplate.delete("${esUrl}/${writeAlias}/${indexType}/${id}?refresh=${refresh}")
         } catch (ex: HttpStatusCodeException) {
             logger.error("delete failed for id={}, body={}", id, ex.getResponseBodyAsString())
             throw ex
