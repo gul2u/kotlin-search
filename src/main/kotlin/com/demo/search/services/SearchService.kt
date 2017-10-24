@@ -40,16 +40,8 @@ class SearchService
 
     fun search(term: String): SearchResponse {
         try {
-            val query = """
-                {
-                    "query": ${queryBuilder.build(term)},
-                    "from": 0,
-                    "size": 25
-                }
-            """
-
             val res = restTemplate.postForObject(URI("${esUrl}/${readAlias}/${indexType}/_search"), 
-                query, RawSearchResponse::class.java)
+                queryBuilder.build(term), RawSearchResponse::class.java)
             return SearchResponse(res.hits.hits.map { SearchResult(it._id, it._score, it._source.title) }) 
         } catch (ex: HttpStatusCodeException) {
             logger.error("query failed for {}, body: {}", term, ex.getResponseBodyAsString())

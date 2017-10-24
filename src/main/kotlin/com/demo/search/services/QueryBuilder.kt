@@ -1,62 +1,84 @@
 package com.demo.search.services
 
 import org.springframework.stereotype.Service
-import mbuhot.eskotlin.query.compound.bool
-import mbuhot.eskotlin.query.fulltext.match
 
 @Service 
 class QueryBuilder {
-    fun exactMatch(term: String) = 
-        match {
-            "title.exact" to {
-                query = term
-                boost = 2.0f
+    fun exactMatch(term: String) = """
+        {
+            "match": {
+                "title.exact": {
+                    "query": "${term}",
+                    "boost": 2.0
+                }
             }
         }
+        """
 
-    fun termMatch(term: String) = 
-        match {
-            "title" to {
-                query = term
-                operator = "and"
-                boost = 1.25f
+    fun termMatch(term: String) = """ 
+        {
+            "match": {
+                "title": {
+                    "query": "${term}",
+                    "operator": "and",
+                    "boost": 1.25
+                }
             }
         }
+        """
 
-    fun stemmedTermMatch(term: String) = 
-        match {
-            "title.stemmed" to {
-                query = term
-                operator = "and"
-                boost = 1.2f
+    fun stemmedTermMatch(term: String) = """
+        {
+            "match": {
+                "title.stemmed": {
+                    "query": "${term}",
+                    "operator": "and",
+                    "boost": 1.2
+                }
             }
         }
+        """
 
-    fun collapseTermMatch(term: String) = 
-        match {
-            "title.collapse" to {
-                query = term
-                boost = 1.2f
+    fun collapseTermMatch(term: String) = """
+        {
+            "match": {
+                "title.collapse": {
+                    "query": "${term}",
+                    "boost": 1.2
+                }
             }
         }
+        """
  
-    fun prefixMatch(term: String) = 
-        match {
-            "title.prefix" to {
-                query = term
-                operator = "and"
-                boost = 1.05f
+    fun prefixMatch(term: String) = """
+        {
+            "match": {
+                "title.prefix": {
+                    "query": "${term}",
+                    "operator": "and",
+                    "boost": 1.05
+                }
             }
         }
+        """
 
-    fun build(term: String) =  
-        bool {
-            should = listOf(
-                exactMatch(term),
-                termMatch(term),
-                stemmedTermMatch(term),
-                collapseTermMatch(term),
-                prefixMatch(term)
-            )
-        }.toString()
+    fun build(term: String) = """
+        {
+            "query": {
+                "bool": {
+                    "should": [
+                        ${exactMatch(term)},
+                        ${termMatch(term)},
+                        ${stemmedTermMatch(term)},
+                        ${collapseTermMatch(term)},
+                        ${prefixMatch(term)}
+                    ]
+                }
+            },
+            "from": 0,
+            "size": 25
+        }
+    """
 }
+
+
