@@ -39,25 +39,26 @@ class SearchService
         try {
             val query = """
                 {
-                    "query": ${queryBuilder.build(term)}
+                    "query": ${queryBuilder.build(term)},
                     "from": 0,
                     "size": 25
                 }
             """
+
             val res = restTemplate.postForObject(URI("${esUrl}/${readAlias}/${indexType}/_search"), 
                 query, RawSearchResponse::class.java)
             return SearchResponse(res.hits.hits.map { SearchResult(it._id, it._score, it._source.title) }) 
         } catch (ex: HttpStatusCodeException) {
-            logger.error("query failed for {}", term, ex)
+            logger.error("query failed for {}, body: {}", term, ex.getResponseBodyAsString())
             throw ex
         }
     }
 
     fun upsertOne(movie: Movie) {
         try {
-            restTemplate.postForObject("${esUrl}/${writeAlias}/${movie.id}/_update", UpsertRequest(movie), String::class.java)
+            restTemplate.postForObject("${esUrl}/${writeAlias}/${movie.id}/_update?refresh=true", UpsertRequest(movie), String::class.java)
         } catch (ex: HttpStatusCodeException) {
-            logger.error("upsert failed for id={}, {}", movie.id, ex)
+            logger.error("upsert failed for id={}, body={}", movie.id, ex.getResponseBodyAsString())
             throw ex
         }
     }
@@ -68,7 +69,7 @@ class SearchService
         try {
             restTemplate.delete("${esUrl}/${writeAlias}/${indexType}/${id}")
         } catch (ex: HttpStatusCodeException) {
-            logger.error("delete failed for id={}, {}", id, ex)
+            logger.error("delete failed for id={}, body={}", id, ex.getResponseBodyAsString())
             throw ex
         }
     }
