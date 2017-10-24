@@ -66,12 +66,12 @@ class SearchService
     private fun buildBulkRec(movie: Movie) = 
         listOf(
             mapper.writeValueAsString(BulkHeaderWrapper(BulkHeader(movie.id, writeAlias, indexType))),
-            mapper.writeValueAsString(movie)
+            mapper.writeValueAsString(UpsertRequest(movie))
         )
 
     fun upsertMany(movies: List<Movie>) {
         try {
-            restTemplate.postForObject("${esUrl}/_bulk?refresh=${refresh}", movies.flatMap { buildBulkRec(it) }.joinToString("\n"), String::class.java)
+            restTemplate.postForObject("${esUrl}/_bulk?refresh=${refresh}", movies.flatMap { buildBulkRec(it) }.joinToString("\n") + "\n", String::class.java)
         } catch (ex: HttpStatusCodeException) {
             logger.error("upsert bulk failed, body={}", ex.getResponseBodyAsString())
             throw ex

@@ -78,11 +78,11 @@ class SearchTests {
         RestAssured.given()
             .contentType(ContentType.JSON)
             .accept(ContentType.JSON)
-            .content(BulkRequest(listOf(Movie("21322", "Lord of the Rings"), Movie("234111", "The Ring"), Movie("2342", "Dead Ringers"))))
+            .content(BulkRequest(listOf(Movie("2222", "Ring"), Movie("11111", "Ring"), Movie("3389", "Ring"))))
             .post("/upsert/bulk")
             .then()
             .statusCode(HttpStatus.OK.value())
-    
+
         RestAssured.given()
             .contentType(ContentType.JSON)
             .accept(ContentType.JSON)
