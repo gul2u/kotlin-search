@@ -77,4 +77,30 @@ class RelevancyTests {
             .body("results", hasSize<Int>(4))
             .body("results[0].title", equalTo("The Ring"))
     }
+
+    @Test
+    fun `should prefix match terms`() {
+        val movies = listOf(
+                Movie("2222", "Marvel's Guardians of the Galaxy"), 
+                Movie("3389", "Argo"),
+                Movie("32421", "Gravity")
+        )
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .content(BulkRequest(movies))
+            .post("/upsert/bulk")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .get("/search/guar")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("results", hasSize<Int>(1))
+            .body("results[0].id", equalTo("2222"))
+    }
+
 }
