@@ -17,6 +17,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import java.util.Collections
 
+import com.demo.search.models.Movie
+import com.demo.search.models.BulkRequest
+
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SearchTests {
@@ -68,6 +71,25 @@ class SearchTests {
             .post("/upsert")
             .then()
             .statusCode(HttpStatus.OK.value())
+    }
+    
+    @Test
+    fun `should bulk insert documents`() {
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .content(BulkRequest(listOf(Movie("21322", "Lord of the Rings"), Movie("234111", "The Ring"), Movie("2342", "Dead Ringers"))))
+            .post("/upsert/bulk")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+    
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .get("/search/ring")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("results", hasSize<Int>(3))
     }
 
     @Test

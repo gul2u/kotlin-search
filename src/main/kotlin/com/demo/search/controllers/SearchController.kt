@@ -1,6 +1,7 @@
 package com.demo.search.controllers
 
 import com.demo.search.models.Movie
+import com.demo.search.models.BulkRequest
 import com.demo.search.services.SearchService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +27,7 @@ class SearchController
     fun upsert(@RequestBody movie: Movie) = searchService.upsertOne(movie)
 
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/upsert/bulk")
-    fun bulk() = searchService.upsertMany()
+    fun bulk(@RequestBody bulkRequest: BulkRequest) = searchService.upsertMany(bulkRequest.movies)
     
     @RequestMapping(method = arrayOf(RequestMethod.POST), value = "/delete/{id}")
     fun del(@PathVariable id: String) = searchService.deleteOne(id)

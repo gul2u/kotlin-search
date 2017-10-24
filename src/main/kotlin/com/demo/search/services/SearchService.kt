@@ -5,6 +5,8 @@ import com.demo.search.models.SearchResponse
 import com.demo.search.models.SearchResult
 import com.demo.search.models.RawSearchResponse
 import com.demo.search.models.UpsertRequest
+import com.demo.search.models.BulkHeaderWrapper
+import com.demo.search.models.BulkHeader
 import com.demo.search.models.Movie
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.HttpStatusCodeException
+import com.fasterxml.jackson.databind.ObjectMapper
 
 @Service
 class SearchService 
@@ -38,6 +41,8 @@ class SearchService
     @Value("\${elasticsearch.refresh}")
     private var refresh: Boolean = false
 
+    private val mapper = ObjectMapper()
+
     fun search(term: String): SearchResponse {
         try {
             val res = restTemplate.postForObject(URI("${esUrl}/${readAlias}/${indexType}/_search"), 
@@ -58,7 +63,20 @@ class SearchService
         }
     }
 
-    fun upsertMany() {}
+    private fun buildBulkRec(movie: Movie) = 
+        listOf(
+            mapper.writeValueAsString(BulkHeaderWrapper(BulkHeader(movie.id, writeAlias, indexType))),
+            mapper.writeValueAsString(movie)
+        )
+
+    fun upsertMany(movies: List<Movie>) {
+        try {
+            restTemplate.postForObject("${esUrl}/_bulk?refresh=${refresh}", movies.flatMap { buildBulkRec(it) }.joinToString("\n"), String::class.java)
+        } catch (ex: HttpStatusCodeException) {
+            logger.error("upsert bulk failed, body={}", ex.getResponseBodyAsString())
+            throw ex
+        }
+    }
     
     fun deleteOne(id: String) {
         try {
